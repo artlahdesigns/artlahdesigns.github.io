@@ -3,86 +3,501 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>artlahdesigns - links</title>
+    <title>artlahdesigns - 8-bit adventure</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        :root {
+            --bg-color: #000;
+            --pixel-dark: #111;
+            --pixel-blue: #0080ff;
+            --pixel-green: #00ff00;
+            --pixel-red: #ff0044;
+            --pixel-yellow: #ffcc00;
+            --pixel-purple: #9900ff;
+            --text-color: #fff;
+            --border-color: #ffcc00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            max-width: 500px;
-            margin: 0 auto;
+            font-family: 'Press Start 2P', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.5;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--pixel-dark) 2px, transparent 2px),
+                linear-gradient(90deg, var(--pixel-dark) 2px, transparent 2px);
+            background-size: 16px 16px;
+        }
+        
+        /* CRT effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.2;
+        }
+        
+        /* Game container */
+        .game-container {
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            padding: 20px;
+            z-index: 1;
+        }
+        
+        /* Game screen */
+        .game-screen {
+            border: 10px solid #333;
+            border-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='30' height='30' fill='%23555555'/%3E%3Crect x='10' y='10' width='10' height='10' fill='%23222222'/%3E%3C/svg%3E") 10;
+            background-color: var(--pixel-dark);
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 0 0 4px #333, 0 0 0 8px #000;
+            animation: powerOn 0.5s ease-in-out;
+            overflow: hidden;
+        }
+        
+        @keyframes powerOn {
+            0% { transform: scale(0.8); opacity: 0; }
+            10% { transform: scale(1.1); opacity: 0.3; }
+            30% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            70% { transform: scale(0.95); opacity: 0.9; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Title section */
+        .game-title {
             text-align: center;
-        }
-        
-        .profile {
             margin-bottom: 30px;
+            animation: blinkColors 4s infinite;
         }
         
-        .profile img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 15px;
+        @keyframes blinkColors {
+            0% { color: var(--text-color); text-shadow: 0 0 5px var(--pixel-blue); }
+            25% { color: var(--text-color); text-shadow: 0 0 5px var(--pixel-green); }
+            50% { color: var(--text-color); text-shadow: 0 0 5px var(--pixel-red); }
+            75% { color: var(--text-color); text-shadow: 0 0 5px var(--pixel-yellow); }
+            100% { color: var(--text-color); text-shadow: 0 0 5px var(--pixel-blue); }
         }
         
-        h1 {
-            font-size: 24px;
+        .title-text {
+            font-size: 20px;
             margin-bottom: 10px;
+            position: relative;
+            display: inline-block;
         }
         
-        p {
-            margin-bottom: 25px;
-            color: #666;
+        .subtitle {
+            font-size: 10px;
+            margin-top: 10px;
+            color: var(--pixel-yellow);
         }
         
-        .links {
+        /* Pixel character */
+        .character-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+        }
+        
+        .pixel-character {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .pixel {
+            width: 8px;
+            height: 8px;
+            background-color: transparent;
+        }
+        
+        /* Character animation */
+        @keyframes idle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .character-container .pixel-character {
+            animation: idle 0.8s infinite;
+        }
+        
+        /* Animated clouds */
+        .cloud {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.1);
+            width: 60px;
+            height: 20px;
+            border-radius: 10px;
+            top: 40px;
+        }
+        
+        .cloud-1 {
+            left: -60px;
+            animation: moveClouds 20s linear infinite;
+        }
+        
+        .cloud-2 {
+            left: -120px;
+            top: 80px;
+            animation: moveClouds 15s linear infinite;
+            animation-delay: 5s;
+        }
+        
+        @keyframes moveClouds {
+            0% { left: -60px; }
+            100% { left: 100%; }
+        }
+        
+        /* Menu items / Links */
+        .game-menu {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
         }
         
-        .link-item {
-            background-color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        .menu-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            color: var(--text-color);
             text-decoration: none;
-            color: #333;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: block;
+            border: 4px solid var(--pixel-yellow);
+            background-color: rgba(0, 0, 0, 0.7);
+            transition: all 0.2s ease;
+            overflow: hidden;
         }
         
-        .link-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        .menu-item:hover {
+            transform: scale(1.03);
+            background-color: rgba(255, 204, 0, 0.1);
         }
         
-        footer {
-            margin-top: 40px;
+        .menu-item:hover .item-text {
+            color: var(--pixel-yellow);
+        }
+        
+        .menu-item:hover .item-icon {
+            animation: iconJump 0.4s ease;
+        }
+        
+        @keyframes iconJump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .menu-item:hover::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 204, 0, 0.05);
+            animation: scanline 1s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        .item-icon {
+            font-size: 16px;
+            color: var(--pixel-yellow);
+            text-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+            transform-style: preserve-3d;
+        }
+        
+        .item-text {
             font-size: 12px;
-            color: #999;
+            text-transform: uppercase;
+        }
+        
+        .selector {
+            position: absolute;
+            left: 5px;
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 8px solid var(--pixel-yellow);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.2s ease;
+        }
+        
+        .menu-item:hover .selector {
+            opacity: 1;
+            transform: translateX(0);
+            animation: blink 0.6s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Game console decorations */
+        .console-decoration {
+            position: relative;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .d-pad {
+            width: 60px;
+            height: 60px;
+            position: relative;
+        }
+        
+        .d-pad::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 60px;
+            background-color: #333;
+            left: 20px;
+        }
+        
+        .d-pad::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            background-color: #333;
+            top: 20px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-button {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #333;
+        }
+        
+        .action-button:nth-child(1) { background-color: var(--pixel-red); }
+        .action-button:nth-child(2) { background-color: var(--pixel-green); }
+        
+        /* Start button */
+        .start-button {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 15px;
+            background-color: #333;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 6px;
+        }
+        
+        /* Status bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            margin-top: 20px;
+            padding: 5px;
+            border: 2px solid var(--pixel-blue);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .health, .score {
+            display: flex;
+            align-items: center;
+        }
+        
+        .health-label, .score-label {
+            margin-right: 5px;
+            color: var(--pixel-blue);
+        }
+        
+        .health-value, .score-value {
+            color: var(--text-color);
+        }
+        
+        /* Footer */
+        .game-footer {
+            text-align: center;
+            font-size: 8px;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Media queries */
+        @media (max-width: 480px) {
+            .title-text {
+                font-size: 16px;
+            }
+            
+            .menu-item {
+                padding: 10px 12px;
+            }
+            
+            .item-text {
+                font-size: 10px;
+            }
+        }
+        
+        /* Configure character pixels */
+        .pixel-character .pixel:nth-child(13), .pixel-character .pixel:nth-child(14), .pixel-character .pixel:nth-child(15), .pixel-character .pixel:nth-child(16), .pixel-character .pixel:nth-child(17), .pixel-character .pixel:nth-child(18) {
+            background-color: var(--pixel-blue);
+        }
+        
+        .pixel-character .pixel:nth-child(22), .pixel-character .pixel:nth-child(23), .pixel-character .pixel:nth-child(24), .pixel-character .pixel:nth-child(25), .pixel-character .pixel:nth-child(26), .pixel-character .pixel:nth-child(27), .pixel-character .pixel:nth-child(28), .pixel-character .pixel:nth-child(29) {
+            background-color: var(--pixel-blue);
+        }
+        
+        .pixel-character .pixel:nth-child(32), .pixel-character .pixel:nth-child(33), .pixel-character .pixel:nth-child(34), .pixel-character .pixel:nth-child(36), .pixel-character .pixel:nth-child(37), .pixel-character .pixel:nth-child(39) {
+            background-color: var(--pixel-blue);
+        }
+        
+        .pixel-character .pixel:nth-child(42), .pixel-character .pixel:nth-child(43), .pixel-character .pixel:nth-child(44), .pixel-character .pixel:nth-child(45), .pixel-character .pixel:nth-child(46), .pixel-character .pixel:nth-child(47), .pixel-character .pixel:nth-child(48), .pixel-character .pixel:nth-child(49) {
+            background-color: var(--pixel-blue);
+        }
+        
+        .pixel-character .pixel:nth-child(52), .pixel-character .pixel:nth-child(59) {
+            background-color: var(--pixel-blue);
+        }
+        
+        .pixel-character .pixel:nth-child(62), .pixel-character .pixel:nth-child(69) {
+            background-color: var(--pixel-blue);
+        }
+        
+        .pixel-character .pixel:nth-child(72), .pixel-character .pixel:nth-child(73), .pixel-character .pixel:nth-child(74), .pixel-character .pixel:nth-child(77), .pixel-character .pixel:nth-child(78), .pixel-character .pixel:nth-child(79) {
+            background-color: var(--pixel-blue);
         }
     </style>
 </head>
 <body>
-    <div class="profile">
-        <!-- <img src="/api/placeholder/100/100" alt="Art Lah Designs Logo"> -->
-        <h1>artlahdesigns</h1>
+    <div class="game-container">
+        <div class="game-screen">
+            <!-- Clouds -->
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            
+            <!-- Title -->
+            <div class="game-title">
+                <div class="title-text">ART LAH DESIGNS</div>
+                <div class="subtitle">PRESS START TO SHOP</div>
+            </div>
+            
+            <!-- Character -->
+            <div class="character-container">
+                <div class="pixel-character">
+                    <!-- 10x10 pixel grid for character -->
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                    <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+                </div>
+            </div>
+            
+            <!-- Menu / Links -->
+            <div class="game-menu">
+                <a href="https://www.instagram.com/artlahdesigns/" class="menu-item" target="_blank" rel="noopener noreferrer">
+                    <div class="selector"></div>
+                    <div class="item-icon"><i class="fab fa-instagram"></i></div>
+                    <div class="item-text">Instagram</div>
+                </a>
+                
+                <a href="https://artlahdesigns.threadless.com/" class="menu-item" target="_blank" rel="noopener noreferrer">
+                    <div class="selector"></div>
+                    <div class="item-icon"><i class="fas fa-tshirt"></i></div>
+                    <div class="item-text">Threadless</div>
+                </a>
+                
+                <a href="https://www.teepublic.com/user/artlahdesigns" class="menu-item" target="_blank" rel="noopener noreferrer">
+                    <div class="selector"></div>
+                    <div class="item-icon"><i class="fas fa-store"></i></div>
+                    <div class="item-text">Teepublic</div>
+                </a>
+                
+                <a href="https://www.redbubble.com/people/artlahdesigns/explore?asc=u&page=1&sortOrder=recent" class="menu-item" target="_blank" rel="noopener noreferrer">
+                    <div class="selector"></div>
+                    <div class="item-icon"><i class="fas fa-palette"></i></div>
+                    <div class="item-text">Redbubble</div>
+                </a>
+                
+                <a href="https://www.designbyhumans.com/shop/artlahdesigns/" class="menu-item" target="_blank" rel="noopener noreferrer">
+                    <div class="selector"></div>
+                    <div class="item-icon"><i class="fas fa-user-friends"></i></div>
+                    <div class="item-text">DesignByHumans</div>
+                </a>
+            </div>
+            
+            <!-- Status bar -->
+            <div class="status-bar">
+                <div class="health">
+                    <div class="health-label">POWER:</div>
+                    <div class="health-value">||||||||</div>
+                </div>
+                <div class="score">
+                    <div class="score-label">SCORE:</div>
+                    <div class="score-value">0024680</div>
+                </div>
+            </div>
+            
+            <!-- Console decorations -->
+            <div class="console-decoration">
+                <div class="d-pad"></div>
+                <div class="action-buttons">
+                    <div class="action-button"></div>
+                    <div class="action-button"></div>
+                </div>
+                <div class="start-button">START</div>
+            </div>
+        </div>
+        
+        <div class="game-footer">
+            &copy; 2025 ART LAH DESIGNS - ALL RIGHTS RESERVED - GAME VERSION 1.0.4
+        </div>
     </div>
-    
-    <div class="links">
-        <a href="https://www.instagram.com/artlahdesigns/" class="link-item" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="https://artlahdesigns.threadless.com/" class="link-item" target="_blank" rel="noopener noreferrer">Threadless</a>
-        <a href="https://www.teepublic.com/user/artlahdesigns" class="link-item" target="_blank" rel="noopener noreferrer">Teepublic</a>
-        <a href="https://www.redbubble.com/people/artlahdesigns/explore?asc=u&page=1&sortOrder=recent" class="link-item" target="_blank" rel="noopener noreferrer">Redbubble</a>        
-        <a href="https://www.designbyhumans.com/shop/artlahdesigns/" class="link-item" target="_blank" rel="noopener noreferrer">DesignByHumans</a>        
-    </div>
-    
-    <footer>
-        &copy; 2025 Art Lah Designs. All rights reserved.
-    </footer>
 </body>
 </html>
